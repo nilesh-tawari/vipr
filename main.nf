@@ -174,7 +174,7 @@ process decont {
     script:
         // bbduk should be faster but uses plenty of memory (>32GB for human)
         """
-        decont.py -i ${fq1} ${fq2} -t ${task.cpus} -c 0.5 -r ${cont_fasta} -o ${sample_id}_trimmed_decont;
+        ~/bin/decont.py -i ${fq1} ${fq2} -t ${task.cpus} -c 0.5 -r ${cont_fasta} -o ${sample_id}_trimmed_decont;
         # since this is the last fastqc processing step, let's run fastqc here
         fastqc -t {task.cpus} ${sample_id}_trimmed_decont_1.fastq.gz ${sample_id}_trimmed_decont_2.fastq.gz;
         """
@@ -217,7 +217,7 @@ process tadpole {
         set sample_id, file("${sample_id}_contigs.fa") into contigs_ch
     script:
         """
-        tadpole.sh -Xmx10g threads=${task.cpus} in=${fq1} in2=${fq2} out=${sample_id}_contigs.fa,
+        tadpole.sh -Xmx30G threads=${task.cpus} in=${fq1} in2=${fq2} out=${sample_id}_contigs.fa
         """
 }
 
