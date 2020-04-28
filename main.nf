@@ -65,8 +65,7 @@ try {
 } catch (all) {
   log.error "====================================================\n" +
             "  Nextflow version $manifest.nextflowVersion required! You are running v$workflow.nextflow.version.\n" +
-            "  Pipeline execution will continue, but things may break.\n" +
-            "  Please run `nextflow self-update` to update Nextflow.\n" +
+            "  Pipeline execution will continue, but things may break.\n" +            "  Please run `nextflow self-update` to update Nextflow.\n" +
             "============================================================"
 }
 
@@ -89,7 +88,7 @@ if(!params.skip_kraken) {
 }
 
 log.info "=================================================="
-log.info " nf-core/vipr : Viral amplicon/enrichment analysis and intrahost variant calling: v${params.pipelineVersion}"
+log.info " nf-core/vipr : Viral amplicon/enrichment analysis and intrahost variant calling: v${manifest.version}"
 log.info "=================================================="
 
 
