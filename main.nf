@@ -88,7 +88,7 @@ if(!params.skip_kraken) {
 }
 
 log.info "=================================================="
-log.info " nf-core/vipr : Viral amplicon/enrichment analysis and intrahost variant calling: v${manifest.version}"
+log.info " nf-core/vipr : Viral amplicon/enrichment analysis and intrahost variant calling: v${workflow.manifest.version}"
 log.info "=================================================="
 
 
