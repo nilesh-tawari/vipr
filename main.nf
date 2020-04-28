@@ -217,7 +217,7 @@ process tadpole {
         set sample_id, file("${sample_id}_contigs.fa") into contigs_ch
     script:
         """
-        tadpole.sh -Xmx30G threads=${task.cpus} in=${fq1} in2=${fq2} out=${sample_id}_contigs.fa
+        tadpole.sh -Xmx30G threads=8 in=${fq1} in2=${fq2} out=${sample_id}_contigs.fa
         """
 }
 
