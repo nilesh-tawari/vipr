@@ -15,7 +15,7 @@
 def helpMessage() {
     log.info"""
     ===================================
-     nfcore/vipr  ~  version ${params.pipelineVersion}
+     nfcore/vipr  ~  version ${manifest.version}
     ===================================
     Usage:
 
@@ -59,12 +59,12 @@ if(workflow.profile == 'awsbatch'){
 
 // Check that Nextflow version is up to date enough
 try {
-    if( ! nextflow.version.matches(">= $params.nf_required_version") ){
-        throw GroovyException("Nextflow version too old: ${workflow.nextflow.version} < $params.nf_required_version")
+    if( ! nextflow.version.matches(">= $manifest.nextflowVersion") ){
+        throw GroovyException("Nextflow version too old: ${workflow.nextflow.version} < $manifest.nextflowVersion")
     }
 } catch (all) {
   log.error "====================================================\n" +
-            "  Nextflow version $params.nf_required_version required! You are running v$workflow.nextflow.version.\n" +
+            "  Nextflow version $manifest.nextflowVersion required! You are running v$workflow.nextflow.version.\n" +
             "  Pipeline execution will continue, but things may break.\n" +
             "  Please run `nextflow self-update` to update Nextflow.\n" +
             "============================================================"
@@ -133,7 +133,7 @@ Channel
  */
 process trim_and_combine {
     tag { "Preprocessing of " + reads.size()/2 + "  read pairs for " + sample_id }
-    //publishDir "${params.outdir}/${sample_id}/reads/", mode: 'copy'
+    publishDir "${params.outdir}/${sample_id}/reads/", mode: 'copy'
 
     input:
         set sample_id, file(reads) from fastq_ch
@@ -241,7 +241,7 @@ process gap_fill_assembly {
         """
         set +e;
         log=${sample_id}-gap-filled-assembly.log;
-        simple_contig_joiner.py -c ${contigs_fa} -r ${input_ref_fasta} \
+        ~/bin/simple_contig_joiner.py -c ${contigs_fa} -r ${input_ref_fasta} \
           -s "${sample_id}-gap-filled-assembly" -o ${sample_id}-gap-filled-assembly.fa \
           -b "${sample_id}-gap-filled-assembly.gaps.bed" >& \$log;
 
@@ -271,7 +271,7 @@ process polish_assembly {
         # downsample to 1M reads to increase runtime
         seqtk sample -s 666 ${fq1} 1000000 | gzip > R1_ds.R1.fastq.gz;
         seqtk sample -s 666 ${fq2} 1000000 | gzip > R2_ds.R2.fastq.gz;
-        polish_viral_ref.sh -t ${task.cpus} -1 R1_ds.R1.fastq.gz -2 R2_ds.R2.fastq.gz \
+        /home/c274411/bin/vipr-tools/src/polish_viral_ref.sh -t ${task.cpus} -1 R1_ds.R1.fastq.gz -2 R2_ds.R2.fastq.gz \
             -r ${assembly_fa} -o ${sample_id}_polished_assembly.fa
         """
 }
@@ -356,8 +356,8 @@ process vipr_tools {
         set sample_id, file("${sample_id}_af-vs-cov.html"), file("${sample_id}_0cov2N.fa")
     script:
         """
-        vipr_af_vs_cov_html.py --vcf ${vcf} --cov ${cov} --plot ${sample_id}_af-vs-cov.html;
-        vipr_gaps_to_n.py -i ${ref_fa} -c ${cov} > ${sample_id}_0cov2N.fa;
+        /home/c274411/bin/vipr-tools/src/vipr_af_vs_cov_html.py --vcf ${vcf} --cov ${cov} --plot ${sample_id}_af-vs-cov.html;
+        /home/c274411/bin/vipr-tools/src/vipr_gaps_to_n.py -i ${ref_fa} -c ${cov} > ${sample_id}_0cov2N.fa;
         """
 }
 
