@@ -59,12 +59,12 @@ if(workflow.profile == 'awsbatch'){
 
 // Check that Nextflow version is up to date enough
 try {
-    if( ! nextflow.version.matches(">= $manifest.nextflowVersion") ){
-        throw GroovyException("Nextflow version too old: ${workflow.nextflow.version} < $manifest.nextflowVersion")
+    if( ! nextflow.version.matches("$workflow.manifest.nextflowVersion") ){
+        throw GroovyException("Nextflow version too old: ${workflow.nextflow.version} < $workflow.manifest.nextflowVersion")
     }
 } catch (all) {
   log.error "====================================================\n" +
-            "  Nextflow version $manifest.nextflowVersion required! You are running v$workflow.nextflow.version.\n" +
+            "  Nextflow version $workflow.manifest.nextflowVersion required! You are running v$workflow.nextflow.version.\n" +
             "  Pipeline execution will continue, but things may break.\n" +            "  Please run `nextflow self-update` to update Nextflow.\n" +
             "============================================================"
 }
